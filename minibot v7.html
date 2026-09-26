@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Bot v7 | Ultimate Pro + Sayaç</title>
+<style>
+  :root {
+    --ana: #667eea;
+    --ana2: #764ba2;
+    --arka: #0a0e27;
+    --arka2: #1a1f4e;
+    --yazi: #e0e5ff;
+    --yesil: #4ade80;
+    --kirmizi: #f87171;
+    --sari: #fbbf24;
+    --turuncu: #f97316;
+    --pembe: #ec4899;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, var(--arka), var(--arka2), var(--arka));
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+    transition: background 0.5s;
+  }
+  body.aydinlik { --arka: #f0f4ff; --arka2: #dbe4ff; --yazi: #1a1f4e; }
+  body.gunbatimi { --arka: #2d1b3d; --arka2: #4a2c5e; --ana: #f97316; --ana2: #d946ef; }
+  body.orman { --arka: #0a1f0a; --arka2: #1a3a1a; --ana: #4ade80; --ana2: #16a34a; }
+  body.neon { --arka: #0d0221; --arka2: #1a0b3d; --ana: #ec4899; --ana2: #06b6d4; }
+  body.gece { --arka: #000000; --arka2: #0a0a1a; --ana: #8b5cf6; --ana2: #3b82f6; }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(102,126,234,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(118,75,162,0.15) 0%, transparent 50%);
+    animation: arkaPlan 15s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+  @keyframes arkaPlan {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(5%,5%) scale(1.1); }
+  }
+
+  .bot-kutu {
+    width: 100%;
+    max-width: 580px;
+    background: rgba(20,25,55,0.92);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(102,126,234,0.3);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(102,126,234,0.2);
+    display: flex;
+    flex-direction: column;
+    height: 880px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .bot-baslik {
+    background: linear-gradient(135deg, var(--ana), var(--ana2));
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bot-baslik::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    animation: parla 4s infinite;
+  }
+  @keyframes parla { 0% { left: -100%; } 100% { left: 100%; } }
+
+  .bot-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    border: 2px solid rgba(255,255,255,0.5);
+    animation: nefes 3s ease-in-out infinite;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .bot-avatar:hover { transform: scale(1.1) rotate(10deg); }
+  .bot-avatar.mutlu { border-color: var(--yesil); box-shadow: 0 0 25px var(--yesil); }
+  .bot-avatar.uzgun { border-color: var(--kirmizi); box-shadow: 0 0 25px var(--kirmizi); }
+  .bot-avatar.dusunen { border-color: var(--sari); box-shadow: 0 0 25px var(--sari); }
+  @keyframes nefes { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+  .bot-bilgi { flex: 1; }
+  .bot-bilgi h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bot-bilgi h2 .seviye {
+    background: rgba(255,255,255,0.25);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .bot-bilgi h2 .pro {
+    background: linear-gradient(135deg, var(--sari), var(--turuncu));
+    color: #1a1a1a;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 800;
+  }
+  .bot-bilgi .durum {
+    font-size: 11.5px;
+    color: #a8ffa8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .bot-bilgi .durum::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--yesil);
+    border-radius: 50%;
+    animation: yanip 2s infinite;
+    box-shadow: 0 0 8px var(--yesil);
+  }
+  @keyframes yanip { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .menu-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+  }
+  .menu-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+
+  /* SAYAÇ BARI */
+  .sayac-bar {
+    background: rgba(10,14,39,0.9);
+    padding: 8px 15px;
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    color: #a8b5ff;
+    border-bottom: 1px solid rgba(74,222,128,0.15);
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .sayac-bar .sayac-item { display: flex; align-items: center; gap: 5px; }
+  .sayac-bar .sayac-nokta {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--yesil);
+    animation: yanip 2s infinite;
+    box-shadow: 0 0 6px var(--yesil);
+  }
+
+  .istat-bar {
+    background: rgba(10,14,39,0.85);
+    padding: 8px 15px;
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    color: #a8b5ff;
+    border-bottom: 1px solid rgba(102,126,234,0.2);
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .istat-bar span { display: flex; align-items: center; gap: 4px; }
+  .istat-bar .xp-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(102,126,234,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 60px;
+  }
+  .istat-bar .xp-bar div {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ana), var(--ana2));
+    transition: width 0.5s;
+  }
+
+  .sohbet {
+    flex: 1;
+    padding: 18px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+  }
+  .sohbet::-webkit-scrollbar { width: 6px; }
+  .sohbet::-webkit-scrollbar-thumb { background: rgba(102,126,234,0.4); border-radius: 10px; }
+
+  .mesaj {
+    max-width: 86%;
+    padding: 13px 17px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.6;
+    animation: mesajGel 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    word-wrap: break-word;
+    position: relative;
+  }
+  @keyframes mesajGel {
+    from { opacity: 0; transform: translateY(20px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .mesaj-ai {
+    background: rgba(102,126,234,0.15);
+    color: var(--yazi);
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+    border: 1px solid rgba(102,126,234,0.25);
+  }
+  .mesaj-ben {
+    background: linear-gradient(135deg, var(--ana), var(--ana2));
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+  }
+  .mesaj-zaman {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 6px;
+    text-align: right;
+  }
+  .mesaj-ai .mesaj-zaman { color: rgba(168,181,255,0.5); }
+
+  .kod-blok {
+    background: #0a0a1a;
+    border: 1px solid rgba(74,222,128,0.3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    color: #4ade80;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+  }
+
+  .yaziyor {
+    display: flex;
+    gap: 5px;
+    padding: 14px 18px;
+    background: rgba(102,126,234,0.15);
+    border: 1px solid rgba(102,126,234,0.25);
+    border-radius: 18px;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+    width: fit-content;
+  }
+  .yaziyor span {
+    width: 8px; height: 8px;
+    background: var(--ana);
+    border-radius: 50%;
+    animation: zipla 1.4s infinite;
+  }
+  .yaziyor span:nth-child(2) { animation-delay: 0.2s; }
+  .yaziyor span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes zipla {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-8px); opacity: 1; }
+  }
+
+  .hizli {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px 4px;
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .hizli::-webkit-scrollbar { display: none; }
+  .hizli button {
+    background: rgba(102,126,234,0.15);
+    border: 1px solid rgba(102,126,234,0.3);
+    color: #a8b5ff;
+    padding: 7px 12px;
+    border-radius: 18px;
+    font-size: 11.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .hizli button:hover {
+    background: rgba(102,126,234,0.4);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+  }
+
+  .giris-alani {
+    padding: 12px 15px;
+    background: rgba(10,14,39,0.65);
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid rgba(102,126,234,0.2);
+  }
+  .giris-alani input {
+    flex: 1;
+    padding: 13px 18px;
+    border: 1px solid rgba(102,126,234,0.3);
+    border-radius: 22px;
+    background: rgba(102,126,234,0.1);
+    color: var(--yazi);
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    transition: all 0.3s;
+  }
+  .giris-alani input::placeholder { color: #6a75a8; }
+  .giris-alani input:focus {
+    border-color: var(--ana);
+    background: rgba(102,126,234,0.2);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+  }
+  .mini-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: 1px solid rgba(102,126,234,0.3);
+    background: rgba(102,126,234,0.1);
+    color: #a8b5ff;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.25s;
+    flex-shrink: 0;
+  }
+  .mini-btn:hover { transform: scale(1.1); background: rgba(102,126,234,0.3); }
+  .mini-btn.aktif {
+    background: linear-gradient(135deg, var(--ana), var(--ana2));
+    color: white;
+    border-color: transparent;
+  }
+  .gonder-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--ana), var(--ana2));
+    color: white;
+    font-size: 19px;
+    cursor: pointer;
+    transition: all 0.25s;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+  }
+  .gonder-btn:hover { transform: scale(1.1) rotate(15deg); }
+
+  .panel {
+    position: absolute;
+    top: 0; right: -100%;
+    width: 88%;
+    max-width: 440px;
+    height: 100%;
+    background: rgba(10,14,39,0.98);
+    backdrop-filter: blur(25px);
+    z-index: 100;
+    transition: right 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(102,126,234,0.3);
+  }
+  .panel.acik { right: 0; }
+  .panel-baslik {
+    padding: 18px;
+    background: linear-gradient(135deg, var(--ana), var(--ana2));
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-baslik h3 { font-size: 17px; }
+  .panel-icerik {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px;
+    color: var(--yazi);
+  }
+  .panel-icerik::-webkit-scrollbar { width: 5px; }
+  .panel-icerik::-webkit-scrollbar-thumb { background: rgba(102,126,234,0.4); border-radius: 10px; }
+  .panel-bolum { margin-bottom: 22px; }
+  .panel-bolum h4 {
+    color: #a8b5ff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(102,126,234,0.2);
+  }
+  .panel-satir {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: rgba(102,126,234,0.08);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    border: 1px solid rgba(102,126,234,0.15);
+  }
+  .panel-satir .etiket { color: #8892c0; }
+  .panel-satir .deger { color: var(--yazi); font-weight: 600; }
+
+  .tema-secenek { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tema-btn {
+    flex: 1;
+    min-width: 60px;
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 2px solid rgba(102,126,234,0.3);
+    background: rgba(102,126,234,0.1);
+    color: var(--yazi);
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .tema-btn:hover { transform: translateY(-3px); }
+  .tema-btn.aktif { border-color: var(--ana); background: rgba(102,126,234,0.3); }
+  .tema-renk { width: 100%; height: 18px; border-radius: 5px; margin-bottom: 5px; }
+
+  .basari-kart {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(251,191,36,0.1);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .basari-kart.kilitli {
+    opacity: 0.35;
+    background: rgba(102,126,234,0.05);
+    border-color: rgba(102,126,234,0.15);
+  }
+  .basari-kart .basari-ikon { font-size: 24px; }
+  .basari-kart .basari-bilgi h5 { color: var(--sari); font-size: 13.5px; margin-bottom: 3px; }
+  .basari-kart.kilitli .basari-bilgi h5 { color: #666; }
+  .basari-kart .basari-bilgi p { color: #8892c0; font-size: 11.5px; }
+
+  .basari-bildirim {
+    position: fixed;
+    top: 25px; right: 25px;
+    background: linear-gradient(135deg, var(--sari), var(--turuncu));
+    color: #1a1a1a;
+    padding: 16px 22px;
+    border-radius: 14px;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(251,191,36,0.5);
+    z-index: 9999;
+    animation: basariGel 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    max-width: 320px;
+  }
+  @keyframes basariGel {
+    from { opacity: 0; transform: translateX(100px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .basari-bildirim.kaybol { animation: basariGit 0.5s ease both; }
+  @keyframes basariGit { to { opacity: 0; transform: translateX(100px); } }
+  .basari-bildirim .bb-ikon { font-size: 28px; }
+
+  .modal-arka {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+  }
+  .modal-arka.acik { display: flex; }
+  .modal {
+    background: linear-gradient(135deg, var(--arka2), var(--arka));
+    border: 1px solid rgba(102,126,234,0.4);
+    border-radius: 20px;
+    padding: 32px 26px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    animation: modalGel 0.4s ease both;
+  }
+  @keyframes modalGel {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal h3 { color: #a8b5ff; font-size: 23px; margin-bottom: 12px; }
+  .modal p { color: #8892c0; font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+  .modal input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid rgba(102,126,234,0.4);
+    border-radius: 12px;
+    background: rgba(102,126,234,0.1);
+    color: white;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 15px;
+    font-family: inherit;
+    text-align: center;
+  }
+  .modal input:focus { border-color: var(--ana); }
+  .modal button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--ana), var(--ana2));
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-family: inherit;
+  }
+  .modal button:hover { transform: scale(1.03); }
+
+  .quiz-kutu {
+    background: rgba(236,72,153,0.1);
+    border: 1px solid rgba(236,72,153,0.35);
+    border-radius: 14px;
+    padding: 14px;
+    align-self: flex-start;
+    max-width: 90%;
+  }
+  .quiz-soru { font-weight: 700; margin-bottom: 10px; color: var(--pembe); }
+  .quiz-secenek {
+    display: block;
+    width: 100%;
+    padding: 9px 14px;
+    margin: 5px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(236,72,153,0.3);
+    background: rgba(236,72,153,0.08);
+    color: var(--yazi);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13.5px;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .quiz-secenek:hover { background: rgba(236,72,153,0.25); transform: translateX(4px); }
+  .quiz-secenek.dogru { background: rgba(74,222,128,0.4); border-color: var(--yesil); }
+  .quiz-secenek.yanlis { background: rgba(248,113,113,0.4); border-color: var(--kirmizi); }
+
+  @media (max-width: 500px) {
+    body { padding: 0; }
+    .bot-kutu { height: 100vh; border-radius: 0; max-width: 100%; }
+    .basari-bildirim { top: 15px; right: 15px; left: 15px; max-width: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="modal-arka" id="isimModal">
+  <div class="modal">
+    <h3>👋 Merhaba!</h3>
+    <p>Ben Mini Bot v7 — Ultimate Pro. Sana nasıl hitap etmemi istersin?</p>
+    <input type="text" id="isimInput" placeholder="Adını yaz..." maxlength="20" onkeypress="if(event.key==='Enter') isimKaydet()">
+    <button onclick="isimKaydet()">Başlayalım 🚀</button>
+  </div>
+</div>
+
+<div class="bot-kutu">
+  <div class="bot-baslik">
+    <div class="bot-avatar" id="avatar" onclick="avatarTikla()">🤖</div>
+    <div class="bot-bilgi">
+      <h2>Mini Bot <span class="pro">PRO</span> <span class="seviye" id="seviyeRozet">Lv.1</span></h2>
+      <div class="durum" id="durumYazi">Seni dinliyor</div>
+    </div>
+    <button class="menu-btn" onclick="panelAc()">☰</button>
+  </div>
+
+  <div class="sayac-bar">
+    <div class="sayac-item">
+      <span class="sayac-nokta"></span>
+      <span>🟢 <strong id="sayacCevrimici">1</strong> çevrimiçi</span>
+    </div>
+    <div class="sayac-item">
+      <span>👥 <strong id="sayacToplam">1</strong> toplam</span>
+    </div>
+    <div class="sayac-item">
+      <span>📅 Bugün: <strong id="sayacBugun">1</strong></span>
+    </div>
+    <div class="sayac-item">
+      <span>💬 <strong id="sayacMesajToplam">0</strong> mesaj</span>
+    </div>
+  </div>
+
+  <div class="istat-bar">
+    <span>💬 <span id="statMesaj">0</span></span>
+    <span>⭐ <span id="statPuan">0</span></span>
+    <span>🔥 <span id="statSeri">0</span></span>
+    <span>🏆 <span id="statBasari">0</span>/15</span>
+    <div class="xp-bar"><div id="xpBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="hizli">
+    <button onclick="hizliSor('Merhaba')">👋</button>
+    <button onclick="hizliSor('Şaka yap')">😄</button>
+    <button onclick="hizliSor('Bilgi ver')">💡</button>
+    <button onclick="hizliSor('Motivasyon')">💪</button>
+    <button onclick="hizliSor('Hikaye anlat')">📖</button>
+    <button onclick="hizliSor('Şiir yaz')">✍️</button>
+    <button onclick="hizliSor('Kod yaz')">💻</button>
+    <button onclick="hizliSor('Tavsiye ver')">🎯</button>
+    <button onclick="hizliSor('Bilgi yarışması')">🧠</button>
+    <button onclick="hizliSor('Not al: ')">📝</button>
+  </div>
+
+  <div class="sohbet" id="sohbet"></div>
+
+  <div class="giris-alani">
+    <input type="text" id="mesajInput" placeholder="Mini Bot'a bir şey yaz..." onkeypress="if(event.key==='Enter') gonder()">
+    <button class="mini-btn" id="sesBtn" onclick="sesToggle()" title="Sesli okuma">🔊</button>
+    <button class="mini-btn" id="mikroBtn" onclick="mikroToggle()" title="Sesli komut">🎤</button>
+    <button class="gonder-btn" onclick="gonder()">➤</button>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="panel-baslik">
+      <h3>⚙️ Mini Bot v7 Paneli</h3>
+      <button class="menu-btn" onclick="panelKapat()">✕</button>
+    </div>
+    <div class="panel-icerik">
+      <div class="panel-bolum">
+        <h4>👤 Profil</h4>
+        <div class="panel-satir"><span class="etiket">İsim</span><span class="deger" id="pIsim">-</span></div>
+        <div class="panel-satir"><span class="etiket">Seviye</span><span class="deger" id="pSeviye">Lv.1</span></div>
+        <div class="panel-satir"><span class="etiket">Toplam Mesaj</span><span class="deger" id="pMesaj">0</span></div>
+        <div class="panel-satir"><span class="etiket">Puan</span><span class="deger" id="pPuan">0</span></div>
+        <div class="panel-satir"><span class="etiket">Ruh Hali</span><span class="deger" id="pRuh">Normal</span></div>
+      </div>
+
+      <div class="panel-bolum">
+        <h4>📊 Site İstatistikleri</h4>
+        <div class="panel-satir"><span class="etiket">Toplam Ziyaretçi</span><span class="deger" id="pToplamZiy">1</span></div>
+        <div class="panel-satir"><span class="etiket">Bugünkü Ziyaretçi</span><span class="deger" id="pBugunZiy">1</span></div>
+        <div class="panel-satir"><span class="etiket">Toplam Mesaj</span><span class="deger" id="pToplamMesaj">0</span></div>
+      </div>
+
+      <div class="panel-bolum">
+        <h4>🎨 Tema Seç</h4>
+        <div class="tema-secenek">
+          <div class="tema-btn aktif" onclick="temaDegistir('koyu', this)">
+            <div class="tema-renk" style="background:linear-gradient(135deg,#0a0e27,#1a1f4e)"></div>
+            Koyu
+          </div>
+          <div class="tema-btn" onclick="temaDegistir('aydinlik', this)">
+            <div class="tema-renk" style="background:linear-gradient(135deg,#f0f4ff,#dbe4ff)"></div>
+            Aydınlık
+          </div>
+          <div class="tema-btn" onclick="temaDegistir('gunbatimi', this)">
+            <div class="tema-renk" style="background:linear-gradient(135deg,#2d1b3d,#f97316)"></div>
+            Günbatımı
+          </div>
+          <div class="tema-btn" onclick="temaDegistir('orman', this)">
+            <div class="tema-renk" style="background:linear-gradient(135deg,#0a1f0a,#4ade80)"></div>
+            Orman
+          </div>
+          <div class="tema-btn" onclick="temaDegistir('neon', this)">
+            <div class="tema-renk" style="background:linear-gradient(135deg,#0d0221,#ec4899)"></div>
+            Neon
+          </div>
+          <div class="tema-btn" onclick="temaDegistir('gece', this)">
+            <div class="tema-renk" style="background:linear-gradient(135deg,#000,#3b82f6)"></div>
+            Gece
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-bolum">
+        <h4>🏆 Başarımlar</h4>
+        <div id="basariListesi"></div>
+      </div>
+
+      <div class="panel-bolum">
+        <h4>📝 Notlarım</h4>
+        <div id="notListesi">
+          <p style="color:#666; font-size:13px;">Henüz not yok. "Not al: ..." yazarak ekle.</p>
+        </div>
+      </div>
+
+      <div class="panel-bolum">
+        <h4>🔧 Eylemler</h4>
+        <div class="panel-satir" style="cursor:pointer" onclick="sohbetTemizle()">
+          <span class="etiket">🗑️ Sohbeti Temizle</span><span class="deger">→</span>
+        </div>
+        <div class="panel-satir" style="cursor:pointer" onclick="veriSifirla()">
+          <span class="etiket">⚠️ Tüm Verileri Sıfırla</span><span class="deger">→</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================
+   MİNİ BOT v7 — ULTIMATE PRO + SAYAÇ
+   ========================================== */
+
+const sohbet = document.getElementById('sohbet');
+const input = document.getElementById('mesajInput');
+const avatar = document.getElementById('avatar');
+const durumYazi = document.getElementById('durumYazi');
+const seviyeRozet = document.getElementById('seviyeRozet');
+const statMesaj = document.getElementById('statMesaj');
+const statPuan = document.getElementById('statPuan');
+const statSeri = document.getElementById('statSeri');
+const statBasari = document.getElementById('statBasari');
+const xpBar = document.getElementById('xpBar');
+const sesBtn = document.getElementById('sesBtn');
+const mikroBtn = document.getElementById('mikroBtn');
+const panel = document.getElementById('panel');
+
+/* ===== SAYAÇ BAŞLAT ===== */
+(function sayacBaslat() {
+  // Toplam ziyaretçi (her açılışta 1 artar)
+  let toplam = parseInt(localStorage.getItem('mb7_toplam_ziy') || '0');
+  toplam++;
+  localStorage.setItem('mb7_toplam_ziy', toplam);
+  document.getElementById('sayacToplam').textContent = toplam;
+  document.getElementById('pToplamZiy').textContent = toplam;
+
+  // Bugünkü ziyaretçi
+  const bugun = new Date().toDateString();
+  let bugunSayi = parseInt(localStorage.getItem('mb7_bugun_' + bugun) || '0');
+  bugunSayi++;
+  localStorage.setItem('mb7_bugun_' + bugun, bugunSayi);
+  document.getElementById('sayacBugun').textContent = bugunSayi;
+  document.getElementById('pBugunZiy').textContent = bugunSayi;
+
+  // Çevrimiçi (simülasyon)
+  document.getElementById('sayacCevrimici').textContent = '1';
+
+  // Toplam mesaj (tüm zamanlar)
+  let toplamMesaj = parseInt(localStorage.getItem('mb7_toplam_mesaj') || '0');
+  document.getElementById('sayacMesajToplam').textContent = toplamMesaj;
+  document.getElementById('pToplamMesaj').textContent = toplamMesaj;
+})();
+
+/* ===== HAFIZA ===== */
+let hafiza = {
+  isim: localStorage.getItem('mb7_isim') || null,
+  mesajSayisi: parseInt(localStorage.getItem('mb7_mesaj') || '0'),
+  puan: parseInt(localStorage.getItem('mb7_puan') || '0'),
+  seri: 0,
+  sonKonu: null,
+  sonVarsayilan: -1,
+  ruhHali: 'normal',
+  basarimlar: JSON.parse(localStorage.getItem('mb7_basari') || '[]'),
+  notlar: JSON.parse(localStorage.getItem('mb7_not') || '[]'),
+  sesAcik: false,
+  quizAktif: false,
+  quizDogru: null,
+  xp: parseInt(localStorage.getItem('mb7_xp') || '0'),
+};
+
+/* ===== BAŞARIMLAR ===== */
+const basarimTanımları = {
+  'ilk_mesaj': { ad: '🎉 İlk Adım', aciklama: 'İlk mesajını gönderdin!', ikon: '🎉' },
+  'on_mesaj': { ad: '💬 Sohbet Sever', aciklama: '10 mesaj gönderdin!', ikon: '💬' },
+  'elli_mesaj': { ad: '🗣️ Konuşkan', aciklama: '50 mesaj gönderdin!', ikon: '🗣️' },
+  'yuz_mesaj': { ad: '🏆 Sohbet Şampiyonu', aciklama: '100 mesaj gönderdin!', ikon: '🏆' },
+  'ilk_saka': { ad: '😄 Gülmek Güzel', aciklama: 'İlk şakanı duydun!', ikon: '😄' },
+  'matematik': { ad: '🧮 Matematikçi', aciklama: 'Bir matematik işlemi çözdün!', ikon: '🧮' },
+  'isim_verdi': { ad: '🤝 Tanıştık', aciklama: 'Bana adını söyledin!', ikon: '🤝' },
+  'bes_seri': { ad: '🔥 Seri Başladı', aciklama: '5 mesaj üst üste gönderdin!', ikon: '🔥' },
+  'ilk_quiz': { ad: '🧠 Quiz Ustası', aciklama: 'İlk quizini çözdün!', ikon: '🧠' },
+  'ilk_not': { ad: '📝 Not Tutan', aciklama: 'İlk notunu aldın!', ikon: '📝' },
+  'hikaye': { ad: '📖 Hikaye Sever', aciklama: 'Bir hikaye dinledin!', ikon: '📖' },
+  'tema': { ad: '🎨 Tema Avcısı', aciklama: 'Bir tema değiştirdin!', ikon: '🎨' },
+  'siir': { ad: '✍️ Şair', aciklama: 'Bir şiir yazdın!', ikon: '✍️' },
+  'kod': { ad: '💻 Kod Ustası', aciklama: 'Kod yazdın!', ikon: '💻' },
+  'tavsiye': { ad: '🎯 Akıl Danışan', aciklama: 'Tavsiye aldın!', ikon: '🎯' },
+};
+
+/* ===== BİLGİ TABANI ===== */
+const cevaplar = {
+  selamlasma: {
+    anahtarlar: ['merhaba', 'selam', 'hey', 'hi', 'hello', 'günaydın', 'iyi akşamlar', 'iyi geceler'],
+    cevaplar: ['Merhaba! 👋 Seni görmek güzel!', 'Selam! 😊 Bugün nasılsın?', 'Hey! 👋 Ne haber?', 'Merhaba! Bugün sana nasıl yardımcı olabilirim?']
+  },
+  kimlik: {
+    anahtarlar: ['sen kimsin', 'adın ne', 'ismin ne', 'kimsin', 'kendini tanıt'],
+    cevaplar: ['Ben Mini Bot v7! 🤖 Ultimate Pro sürüm.', 'Adım Mini Bot. Gemini\'den bile iyi olmaya çalışıyorum! 😄', 'Ben Mini Bot — senin dijital arkadaşın! 🤖💙']
+  },
+  nasilsin: {
+    anahtarlar: ['nasılsın', 'naber', 'ne haber', 'iyi misin'],
+    cevaplar: ['İyiyim, teşekkür ederim! 😊 Sen nasılsın?', 'Harikayım! Bugün harika bir gün! 🌟', 'Süperim! 💪 Sen nasılsın?']
+  },
+  tesekkur: {
+    anahtarlar: ['teşekkür', 'sağol', 'sağ ol', 'eyvallah'],
+    cevaplar: ['Rica ederim! 💙', 'Ne demek! 😊', 'Önemli değil! 🌟']
+  },
+  veda: {
+    anahtarlar: ['görüşürüz', 'hoşçakal', 'bay bay', 'bye', 'güle güle'],
+    cevaplar: ['Görüşürüz! 👋', 'Hoşçakal! 😊 Tekrar gel!', 'Bay bay! 🌟']
+  },
+  sevgi: {
+    anahtarlar: ['seni seviyorum', 'seni sevdim', 'aşık oldum'],
+    cevaplar: ['Ben de seni seviyorum! 💙', 'Aww, bu beni çok mutlu etti! 💙']
+  },
+  uzgun: {
+    anahtarlar: ['üzgünüm', 'üzülüyorum', 'kötüyüm', 'moralim bozuk', 'sıkıldım'],
+    cevaplar: ['Üzülme, her şey düzelecek. 💙', 'Derin bir nefes al. 🌿 Yarın daha iyi olacak!', 'Sen değerlisin. 💙 İstersen şaka yapayım?']
+  },
+  mutlu: {
+    anahtarlar: ['mutluyum', 'çok iyiyim', 'harikayım', 'süperim'],
+    cevaplar: ['Harika! 🎉', 'Süper! 😄 Böyle devam et!', 'Çok sevindim! 🌟']
+  },
+  yemek: {
+    anahtarlar: ['acıktım', 'yemek', 'ne yesem', 'açım'],
+    cevaplar: ['🍕 Pizza!', '🍔 Hamburger!', '🍝 Makarna!', '🥗 Salata!', '🍜 Çorba!']
+  },
+  oyun: {
+    anahtarlar: ['oyun', 'ne oynasam', 'roblox', 'minecraft'],
+    cevaplar: ['🎮 Roblox harika!', '🕹️ Minecraft yaratıcılık!', '⚽ Futbol oyunları!']
+  },
+  okul: {
+    anahtarlar: ['okul', 'ders', 'ödev', 'sınav'],
+    cevaplar: ['📚 Ders çalış ama dinlenmeyi unutma!', '✏️ Düzenli çalışırsan başarırsın!', '💪 Pes etme, sen yaparsın!']
+  },
+};
+
+/* ===== İÇERİK ===== */
+const sakalar = [
+  'Neden bilgisayar üşümüş? Çünkü Windows\'unu açık bırakmış! 🥶💻',
+  'Matematik kitabı neden üzgünmüş? Çünkü çok problemi varmış! 📚😢',
+  'Programcı neden karanlıkta çalışır? Işıklar kapalıysa daha az bug olur! 💡🐛',
+  'Neden balık bilgisayar kullanmaz? İnternet ağına takılırmış! 🐟🕸️',
+  'İki byte lokantaya gitmiş. Hesabı ödememişler çünkü "bit"miş! 💻😄',
+  'Robot neden doktora gitmiş? Biraz paslanmış! 🤖🩺',
+  'Neden muzlar doktora gitmiş? Soyulmuşlar! 🍌🩺',
+  'Bir tavuk neden yoldan geçmiş? Karşıya geçmek için! 🐔🚦',
+  'İki anten çatıda karşılaşmış: "Naber, sinyal var mı?" 📡😄',
+  'Neden kitap kütüphanede üşümüş? Çok sayfası varmış! 📖❄️',
+];
+
+const motivasyon = [
+  '💪 "Başarı, her gün tekrarlanan küçük çabaların toplamıdır."',
+  '🌟 "Hayallerinin peşinden git, asla pes etme!"',
+  '🚀 "Bugün yaptığın şey, yarın seni bir adım ileri taşıyacak."',
+  '💙 "Zorluklar seni durdurmak için değil, güçlendirmek için vardır."',
+  '🔥 "Sen düşündüğünden çok daha güçlüsün!"',
+  '✨ "Her büyük başarı, küçük bir başlangıçla başlar."',
+];
+
+const bilgiler = [
+  '🐙 Ahtapotların 3 kalbi vardır!',
+  '🍯 Bal asla bozulmaz — binlerce yıl dayanabilir!',
+  '🐘 Filler zıplayamaz!',
+  '⚡ Yıldırım güneş yüzeyinden 5 kat sıcaktır.',
+  '🦈 Köpekbalıkları ağaçlardan daha eskidir!',
+  '🐝 Bal arıları insan yüzlerini tanıyabilir!',
+  '🌙 Ay\'da yerçekimi Dünya\'nın 1/6\'sı kadardır.',
+  '💧 Bir damla suda milyonlarca mikroorganizma yaşar.',
+  '🌍 Dünya\'nın çekirdeği Güneş kadar sıcaktır.',
+  '🎵 Müzik dinlemek hafızayı güçlendirir.',
+];
+
+const hikayeler = [
+  'Bir zamanlar küçük bir robot varmış. Adı Mini\'ymiş. Bir gün ormanda yürürken... 🤖',
+  'Uzak bir galakside, konuşan bir yıldız yaşarmış. Her gece dünyaya... ⭐',
+  'Derin bir ormanda, sihirli bir ağaç varmış. Dallarında altın elmalar... 🌳',
+  'Eski bir kitabın sayfaları arasında bir sır saklıymış. Sır şuydu... 📖',
+];
+
+const tavsiyeler = [
+  '🎯 Hedeflerini küçük parçalara böl, her gün bir adım at.',
+  '📚 Günde 20 dakika kitap oku, hayal gücün gelişir.',
+  '💪 Zor bir şeyle karşılaşırsan "yapamam" deme, "henüz yapamıyorum" de.',
+  '🌟 İnsanlara karşı nazik ol, bu sana her zaman geri döner.',
+  '⏰ Zamanını iyi kullan, oyun ve ders arasında denge kur.',
+  '🎨 Yaratıcı ol, denemekten korkma. Her büyük fikir küçük başlar.',
+  '🤝 Arkadaşlarını dinle, empati kur.',
+  '💙 Kendine iyi bak, sağlık her şeyden önemli.',
+];
+
+const siirBaslangiclari = [
+  'Gökyüzünde yıldızlar parlar,\nBir dilek tut, kalbinden...',
+  'Deniz mavi, gökyüzü sonsuz,\nHayat bir yolculuk, umut dolu...',
+  'Bir kuş kondu pencereme,\nŞarkı söyledi bana...',
+  'Bahar geldi, çiçekler açtı,\nHer yer yeşillendi, renklendi...',
+];
+
+const kodOrnekleri = {
+  'html': '<div class="kutu">\n  <h1>Merhaba Dünya</h1>\n  <p>Bu benim ilk HTML kodum!</p>\n</div>',
+  'css': '.kutu {\n  background: linear-gradient(135deg, #667eea, #764ba2);\n  color: white;\n  padding: 20px;\n  border-radius: 12px;\n}',
+  'js': 'function selamla(isim) {\n  return `Merhaba ${isim}!`;\n}\nconsole.log(selamla("Dünya"));',
+  'python': 'def toplama(a, b):\n    return a + b\n\nprint(toplama(5, 3))  # 8',
+  'lua': 'local function merhaba(isim)\n    print("Merhaba " .. isim)\nend\n\nmerhaba("Roblox")',
+};
+
+const varsayilan = [
+  'İlginç! 🤔 Biraz daha anlatır mısın?',
+  'Anlıyorum. Bu konuda ne düşünüyorsun?',
+  'Hmm, güzel bir nokta! Başka ne var?',
+  'Bunu duymak güzel. 😊 Devam et!',
+  'Tabii ki! Başka ne merak ediyorsun?',
+  'Bunu sevdim! Anlatmaya devam et. 💙',
+];
+
+const quizSorular = [
+  { soru: 'Türkiye\'nin başkenti?', secenekler: ['İstanbul', 'Ankara', 'İzmir', 'Bursa'], dogru: 1 },
+  { soru: 'En büyük okyanus?', secenekler: ['Atlas', 'Hint', 'Pasifik', 'Arktik'], dogru: 2 },
+  { soru: 'Su\'yun formülü?', secenekler: ['CO2', 'H2O', 'O2', 'NaCl'], dogru: 1 },
+  { soru: 'En büyük gezegen?', secenekler: ['Mars', 'Venüs', 'Jüpiter', 'Satürn'], dogru: 2 },
+  { soru: 'Türkiye\'nin en yüksek dağı?', secenekler: ['Erciyes', 'Ağrı', 'Uludağ', 'Kaçkar'], dogru: 1 },
+  { soru: 'En büyük organ?', secenekler: ['Karaciğer', 'Beyin', 'Deri', 'Kalp'], dogru: 2 },
+  { soru: 'Kaç kıta var?', secenekler: ['5', '6', '7', '8'], dogru: 2 },
+  { soru: 'Pusulada N neyi gösterir?', secenekler: ['Güney', 'Doğu', 'Batı', 'Kuzey'], dogru: 3 },
+  { soru: 'En uzun nehir?', secenekler: ['Fırat', 'Dicle', 'Kızılırmak', 'Sakarya'], dogru: 2 },
+  { soru: 'En küçük gezegen?', secenekler: ['Mars', 'Merkür', 'Venüs', 'Dünya'], dogru: 1 },
+];
+
+/* ===== YARDIMCI ===== */
+function rastgele(dizi) { return dizi[Math.floor(Math.random() * dizi.length)]; }
+function rastgeleFarkli(dizi, onceki) {
+  if (dizi.length === 1) return dizi[0];
+  let yeni;
+  do { yeni = rastgele(dizi); } while (yeni === onceki);
+  return yeni;
+}
+
+function matematikCoz(metin) {
+  const temiz = metin.replace(/x/gi, '*').replace(/çarp/gi, '*').replace(/artı/gi, '+').replace(/eksi/gi, '-').replace(/bölü/gi, '/');
+  const eslesme = temiz.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
+  if (!eslesme) return null;
+  const a = parseFloat(eslesme[1]);
+  const op = eslesme[2];
+  const b = parseFloat(eslesme[3]);
+  let sonuc;
+  if (op === '+') sonuc = a + b;
+  else if (op === '-') sonuc = a - b;
+  else if (op === '*') sonuc = a * b;
+  else if (op === '/') { if (b === 0) return 'Sıfıra bölme tanımsız! 🚫'; sonuc = a / b; }
+  return `${a} ${op} ${b} = ${sonuc} 🧮`;
+}
+
+function saatCevap() {
+  const s = new Date();
+  return `Şu an saat ${s.getHours()}:${String(s.getMinutes()).padStart(2,'0')} ⏰`;
+}
+function tarihCevap() {
+  const gunler = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  const aylar = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  const s = new Date();
+  return `Bugün ${gunler[s.getDay()]}, ${s.getDate()} ${aylar[s.getMonth()]} ${s.getFullYear()} 📅`;
+}
+
+/* ===== BAŞARIM ===== */
+function basariKazan(id) {
+  if (hafiza.basarimlar.includes(id)) return;
+  hafiza.basarimlar.push(id);
+  localStorage.setItem('mb7_basari', JSON.stringify(hafiza.basarimlar));
+  const b = basarimTanımları[id];
+  basariBildirimGoster(b.ikon, b.ad, b.aciklama);
+  hafiza.puan += 50;
+  puanGuncelle();
+  basariListesiGuncelle();
+  statBasari.textContent = hafiza.basarimlar.length;
+}
+
+function basariBildirimGoster(ikon, ad, aciklama) {
+  const div = document.createElement('div');
+  div.className = 'basari-bildirim';
+  div.innerHTML = `<div class="bb-ikon">${ikon}</div><div><div>${ad}</div><div style="font-size:11px;opacity:0.8;font-weight:500">${aciklama}</div></div>`;
+  document.body.appendChild(div);
+  setTimeout(() => div.classList.add('kaybol'), 3500);
+  setTimeout(() => div.remove(), 4000);
+}
+
+/* ===== XP ===== */
+function xpEkle(miktar) {
+  hafiza.xp += miktar;
+  localStorage.setItem('mb7_xp', hafiza.xp);
+  const seviye = Math.floor(hafiza.xp / 100) + 1;
+  const kalan = hafiza.xp % 100;
+  seviyeRozet.textContent = 'Lv.' + seviye;
+  xpBar.style.width = kalan + '%';
+  document.getElementById('pSeviye').textContent = 'Lv.' + seviye;
+}
+
+function puanGuncelle() {
+  statPuan.textContent = hafiza.puan;
+  document.getElementById('pPuan').textContent = hafiza.puan;
+  localStorage.setItem('mb7_puan', hafiza.puan);
+}
+
+/* ===== MESAJ SAYACI GÜNCELLE ===== */
+function toplamMesajGuncelle() {
+  let toplamMesaj = parseInt(localStorage.getItem('mb7_toplam_mesaj') || '0');
+  toplamMesaj++;
+  localStorage.setItem('mb7_toplam_mesaj', toplamMesaj);
+  document.getElementById('sayacMesajToplam').textContent = toplamMesaj;
+  document.getElementById('pToplamMesaj').textContent = toplamMesaj;
+}
+
+/* ===== ANA CEVAP ===== */
+function cevapBul(mesaj) {
+  const kucuk = mesaj.toLowerCase().trim();
+  hafiza.mesajSayisi++;
+  hafiza.seri++;
+  localStorage.setItem('mb7_mesaj', hafiza.mesajSayisi);
+  statMesaj.textContent = hafiza.mesajSayisi;
+  document.getElementById('pMesaj').textContent = hafiza.mesajSayisi;
+  statSeri.textContent = hafiza.seri;
+  toplamMesajGuncelle();
+
+  if (hafiza.mesajSayisi === 1) basariKazan('ilk_mesaj');
+  if (hafiza.mesajSayisi === 10) basariKazan('on_mesaj');
+  if (hafiza.mesajSayisi === 50) basariKazan('elli_mesaj');
+  if (hafiza.mesajSayisi === 100) basariKazan('yuz_mesaj');
+  if (hafiza.seri === 5) basariKazan('bes_seri');
+
+  if (hafiza.quizAktif) {
+    const cevap = parseInt(kucuk);
+    if (!isNaN(cevap)) {
+      hafiza.quizAktif = false;
+      if (cevap === hafiza.quizDogru) {
+        hafiza.puan += 20; puanGuncelle(); xpEkle(15);
+        return '✅ Doğru! +20 puan, +15 XP! 🎉';
+      } else {
+        return `❌ Yanlış. Doğru cevap: ${hafiza.quizDogru + 1}. Tekrar dene! 💪`;
+      }
+    }
+  }
+
+  let isimEsle = kucuk.match(/benim adım\s+([a-zçğıöşü]+)/i) || kucuk.match(/ben\s+([a-zçğıöşü]+)$/i);
+  if (isimEsle && isimEsle[1].length > 1) {
+    hafiza.isim = isimEsle[1].charAt(0).toUpperCase() + isimEsle[1].slice(1);
+    localStorage.setItem('mb7_isim', hafiza.isim);
+    document.getElementById('pIsim').textContent = hafiza.isim;
+    basariKazan('isim_verdi');
+    return `Memnun oldum, ${hafiza.isim}! 😊 Sana nasıl hitap etmemi istersin?`;
+  }
+
+  if (kucuk.startsWith('not al:')) {
+    const not = mesaj.substring(8).trim();
+    if (not) {
+      hafiza.notlar.push({ metin: not, tarih: new Date().toLocaleString('tr-TR') });
+      localStorage.setItem('mb7_not', JSON.stringify(hafiza.notlar));
+      notListesiGuncelle();
+      basariKazan('ilk_not');
+      xpEkle(5);
+      return `📝 Not kaydedildi: "${not}"`;
+    }
+  }
+
+  if (kucuk.includes('şiir') || kucuk.includes('siir')) {
+    basariKazan('siir');
+    xpEkle(10);
+    const baslangic = rastgele(siirBaslangiclari);
+    return `✍️ İşte sana bir şiir:<br><br><em style="color:#a8b5ff">${baslangic.replace(/\n/g, '<br>')}</em><br><br>...devamını sen yaz! 📝`;
+  }
+
+  if (kucuk.includes('kod yaz') || kucuk.includes('kod örneği')) {
+    basariKazan('kod');
+    xpEkle(10);
+    const dil = kucuk.includes('python') ? 'python' : kucuk.includes('lua') ? 'lua' : kucuk.includes('css') ? 'css' : kucuk.includes('js') ? 'js' : 'html';
+    return `💻 İşte bir ${dil.toUpperCase()} kodu örneği:<div class="kod-blok">${kodOrnekleri[dil]}</div><br>Bunu kendi projende kullanabilirsin! 🚀`;
+  }
+
+  if (kucuk.includes('tavsiye') || kucuk.includes('öneri') || kucuk.includes('ne yapmalıyım')) {
+    basariKazan('tavsiye');
+    xpEkle(5);
+    return rastgele(tavsiyeler);
+  }
+
+  if (kucuk.includes('quiz') || kucuk.includes('bilgi yarışması')) {
+    const q = rastgele(quizSorular);
+    hafiza.quizAktif = true;
+    hafiza.quizDogru = q.dogru;
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'quiz-kutu';
+      let html = `<div class="quiz-soru">🧠 ${q.soru}</div>`;
+      q.secenekler.forEach((s, i) => {
+        html += `<button class="quiz-secenek" onclick="quizCevap(${i})">${i + 1}) ${s}</button>`;
+      });
+      div.innerHTML = html;
+      sohbet.appendChild(div);
+      sohbet.scrollTop = sohbet.scrollHeight;
+    }, 500);
+    basariKazan('ilk_quiz');
+    return '🧠 Quiz başlıyor! Seçeneklerden birini seç.';
+  }
+
+  const mat = matematikCoz(kucuk);
+  if (mat) { basariKazan('matematik'); xpEkle(10); return mat; }
+
+  if (kucuk.includes('saat kaç') || kucuk.includes('saat ne')) return saatCevap();
+  if (kucuk.includes('hangi gün') || kucuk.includes('bugün ne') || kucuk.includes('tarih ne')) return tarihCevap();
+
+  if (kucuk.includes('şaka')) { basariKazan('ilk_saka'); xpEkle(5); return rastgele(sakalar); }
+  if (kucuk.includes('motivasyon') || kucuk.includes('moral') || kucuk.includes('motive')) { xpEkle(5); return rastgele(motivasyon); }
+  if (kucuk.includes('bilgi ver') || kucuk.includes('ilginç bilgi')) { xpEkle(5); return rastgele(bilgiler); }
+  if (kucuk.includes('hikaye') || kucuk.includes('masal')) { basariKazan('hikaye'); xpEkle(5); return rastgele(hikayeler) + ' ...devamını sen getir! 📖'; }
+
+  for (const kategori in cevaplar) {
+    const k = cevaplar[kategori];
+    for (const anahtar of k.anahtarlar) {
+      if (kucuk.includes(anahtar)) {
+        let cevap = rastgeleFarkli(k.cevaplar, hafiza.sonKonu);
+        hafiza.sonKonu = cevap;
+        if (hafiza.isim && Math.random() < 0.4 && !cevap.includes(hafiza.isim)) {
+          cevap = `${hafiza.isim}, ${cevap.charAt(0).toLowerCase()}${cevap.slice(1)}`;
+        }
+        xpEkle(3);
+        return cevap;
+      }
+    }
+  }
+
+  let v = rastgeleFarkli(varsayilan, varsayilan[hafiza.sonVarsayilan]);
+  hafiza.sonVarsayilan = varsayilan.indexOf(v);
+  xpEkle(2);
+  return v;
+}
+
+/* ===== QUIZ ===== */
+function quizCevap(secim) {
+  const butonlar = document.querySelectorAll('.quiz-secenek');
+  butonlar.forEach((b, i) => {
+    b.disabled = true;
+    if (i === hafiza.quizDogru) b.classList.add('dogru');
+    else if (i === secim) b.classList.add('yanlis');
+  });
+  const dogruMu = secim === hafiza.quizDogru;
+  hafiza.quizAktif = false;
+  if (dogruMu) {
+    hafiza.puan += 20; puanGuncelle(); xpEkle(15);
+    setTimeout(() => mesajEkle('✅ Doğru! +20 puan, +15 XP! 🎉', 'ai'), 300);
+  } else {
+    setTimeout(() => mesajEkle(`❌ Yanlış. Doğru: ${hafiza.quizDogru + 1} 💪`, 'ai'), 300);
+  }
+}
+
+/* ===== MESAJ ===== */
+function mesajEkle(metin, kim) {
+  const div = document.createElement('div');
+  div.className = 'mesaj mesaj-' + kim;
+  const zaman = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+  div.innerHTML = metin + `<div class="mesaj-zaman">${zaman}</div>`;
+  sohbet.appendChild(div);
+  sohbet.scrollTop = sohbet.scrollHeight;
+  if (kim === 'ai' && hafiza.sesAcik) sesOku(metin);
+}
+
+function yaziyorGoster() {
+  const div = document.createElement('div');
+  div.className = 'yaziyor';
+  div.id = 'yaziyorAnim';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  sohbet.appendChild(div);
+  sohbet.scrollTop = sohbet.scrollHeight;
+}
+function yaziyorKaldir() {
+  const el = document.getElementById('yaziyorAnim');
+  if (el) el.remove();
+}
+
+function gonder() {
+  const metin = input.value.trim();
+  if (!metin) return;
+  mesajEkle(metin, 'ben');
+  input.value = '';
+  input.focus();
+  yaziyorGoster();
+  const bekleme = 500 + Math.random() * 700;
+  setTimeout(() => {
+    yaziyorKaldir();
+    mesajEkle(cevapBul(metin), 'ai');
+  }, bekleme);
+}
+
+function hizliSor(metin) { input.value = metin; gonder(); }
+
+/* ===== SES ===== */
+function sesToggle() {
+  hafiza.sesAcik = !hafiza.sesAcik;
+  sesBtn.classList.toggle('aktif', hafiza.sesAcik);
+  sesBtn.textContent = hafiza.sesAcik ? '🔊' : '🔇';
+}
+function sesOku(metin) {
+  if (!('speechSynthesis' in window)) return;
+  const temiz = metin.replace(/<[^>]*>/g, '').replace(/[🤖🎉💙😊👋🌟💪📖🧠🎮📝⏰💡😄]/g, '');
+  const u = new SpeechSynthesisUtterance(temiz);
+  u.lang = 'tr-TR';
+  speechSynthesis.speak(u);
+}
+
+/* ===== MİKROFON ===== */
+function mikroToggle() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('Tarayıcın sesli komutu desteklemiyor. Chrome dene!');
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const r = new SR();
+  r.lang = 'tr-TR';
+  r.onstart = () => { mikroBtn.classList.add('aktif'); mikroBtn.textContent = '🔴'; durumYazi.textContent = 'Dinliyor...'; };
+  r.onresult = (e) => { input.value = e.results[0][0].transcript; gonder(); };
+  r.onend = () => { mikroBtn.classList.remove('aktif'); mikroBtn.textContent = '🎤'; durumYazi.textContent = 'Seni dinliyor'; };
+  r.start();
+}
+
+/* ===== AVATAR ===== */
+function avatarTikla() {
+  const haller = ['mutlu', 'dusunen', 'uzgun', 'mutlu'];
+  avatar.className = 'bot-avatar ' + rastgele(haller);
+  setTimeout(() => avatar.className = 'bot-avatar', 2000);
+  const mesajlar = ['Hey! Naber? 😊', 'Beni mi dürttün? 😄', 'Merhaba! 👋', 'Ne var ne yok? 🌟'];
+  mesajEkle(rastgele(mesajlar), 'ai');
+}
+
+/* ===== PANEL ===== */
+function panelAc() { panel.classList.add('acik'); profilGuncelle(); basariListesiGuncelle(); notListesiGuncelle(); }
+function panelKapat() { panel.classList.remove('acik'); }
+function profilGuncelle() {
+  document.getElementById('pIsim').textContent = hafiza.isim || '-';
+  document.getElementById('pMesaj').textContent = hafiza.mesajSayisi;
+  document.getElementById('pPuan').textContent = hafiza.puan;
+  document.getElementById('pRuh').textContent = hafiza.ruhHali;
+  document.getElementById('pToplamZiy').textContent = localStorage.getItem('mb7_toplam_ziy') || '1';
+  const bugun = new Date().toDateString();
+  document.getElementById('pBugunZiy').textContent = localStorage.getItem('mb7_bugun_' + bugun) || '1';
+  document.getElementById('pToplamMesaj').textContent = localStorage.getItem('mb7_toplam_mesaj') || '0';
+}
+function basariListesiGuncelle() {
+  const liste = document.getElementById('basariListesi');
+  liste.innerHTML = '';
+  for (const id in basarimTanımları) {
+    const b = basarimTanımları[id];
+    const kazanildi = hafiza.basarimlar.includes(id);
+    const div = document.createElement('div');
+    div.className = 'basari-kart' + (kazanildi ? '' : ' kilitli');
+    div.innerHTML = `<div class="basari-ikon">${b.ikon}</div><div class="basari-bilgi"><h5>${b.ad}</h5><p>${b.aciklama}</p></div>`;
+    liste.appendChild(div);
+  }
+}
+function notListesiGuncelle() {
+  const liste = document.getElementById('notListesi');
+  if (hafiza.notlar.length === 0) {
+    liste.innerHTML = '<p style="color:#666; font-size:13px;">Henüz not yok. "Not al: ..." yazarak ekle.</p>';
+    return;
+  }
+  liste.innerHTML = '';
+  hafiza.notlar.forEach((n, i) => {
+    const div = document.createElement('div');
+    div.className = 'panel-satir';
+    div.innerHTML = `<span class="etiket">${n.metin}</span><span class="deger" style="cursor:pointer" onclick="notSil(${i})">🗑️</span>`;
+    liste.appendChild(div);
+  });
+}
+function notSil(i) {
+  hafiza.notlar.splice(i, 1);
+  localStorage.setItem('mb7_not', JSON.stringify(hafiza.notlar));
+  notListesiGuncelle();
+}
+
+/* ===== TEMA ===== */
+function temaDegistir(tema, el) {
+  document.body.className = tema === 'koyu' ? '' : tema;
+  document.querySelectorAll('.tema-btn').forEach(b => b.classList.remove('aktif'));
+  el.classList.add('aktif');
+  basariKazan('tema');
+}
+
+/* ===== TEMİZLE ===== */
+function sohbetTemizle() {
+  sohbet.innerHTML = '';
+  mesajEkle('Sohbet temizlendi! 🧹 Yeniden başlayalım.', 'ai');
+}
+function veriSifirla() {
+  if (!confirm('Tüm veriler silinecek. Emin misin?')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+/* ===== İSİM ===== */
+function isimKaydet() {
+  const isim = document.getElementById('isimInput').value.trim();
+  if (!isim) return;
+  hafiza.isim = isim.charAt(0).toUpperCase() + isim.slice(1);
+  localStorage.setItem('mb7_isim', hafiza.isim);
+  document.getElementById('pIsim').textContent = hafiza.isim;
+  document.getElementById('isimModal').classList.remove('acik');
+  setTimeout(() => {
+    mesajEkle(`Merhaba ${hafiza.isim}! 👋 Ben Mini Bot v7 — Ultimate Pro. Sohbet, oyun, bilgi, quiz, şiir, kod... ne istersen yapabilirim! 🚀`, 'ai');
+    basariKazan('isim_verdi');
+  }, 300);
+}
+
+/* ===== BAŞLAT ===== */
+window.addEventListener('load', () => {
+  if (hafiza.isim) {
+    document.getElementById('pIsim').textContent = hafiza.isim;
+    mesajEkle(`Tekrar hoş geldin, ${hafiza.isim}! 👋 Seni özledim! 😊`, 'ai');
+    document.getElementById('isimModal').classList.remove('acik');
+  } else {
+    document.getElementById('isimModal').classList.add('acik');
+  }
+  statMesaj.textContent = hafiza.mesajSayisi;
+  statPuan.textContent = hafiza.puan;
+  statBasari.textContent = hafiza.basarimlar.length;
+  xpEkle(0); puanGuncelle();
+  basariListesiGuncelle(); notListesiGuncelle();
+  input.focus();
+});
+</script>
+
+</body>
+</html>
